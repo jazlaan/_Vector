@@ -48,7 +48,6 @@ public class userInterface extends Frame
         });
 
         //add menu items to canvas
-        //file
         menuBar.add(File);
         File.add(open);
         File.add(Save);
