@@ -3,9 +3,15 @@ package com.vectors;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
+import java.util.ArrayList;
+import javax.swing.filechooser.*;
 
 public class userInterface extends Frame implements MouseMotionListener,MouseListener,ActionListener,KeyListener
 {
+
+    private static int selectedShape =0;
+    private static int shapeStyle =0;
 
     // canvas
     private static userInterface canvas = new userInterface();
@@ -137,7 +143,42 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
 
     }
 
-    public void actionPerformed(ActionEvent e) {}
+    public void undoShape() {
+    }
+
+    public void actionPerformed(ActionEvent e) {
+
+        MenuItem selectedMenuItem = (MenuItem) e.getSource();
+
+        //reset canvas
+        if(selectedMenuItem== undo){
+            undoShape();
+        }
+        else if(selectedMenuItem== reset)
+            repaint();
+
+            //shape
+        else if(selectedMenuItem== plot)
+            selectedShape =0;
+
+        else if(selectedMenuItem== line)
+            selectedShape =1;
+
+        else if(selectedMenuItem== rectangle)
+            selectedShape =2;
+
+        else if(selectedMenuItem== ellipse)
+            selectedShape =3;
+
+        else if(selectedMenuItem== poly)
+            selectedShape =4;
+
+        //style
+        if(selectedMenuItem== Static)
+            shapeStyle =0;
+        else if(selectedMenuItem== Fill)
+            shapeStyle =1;
+    }
 
     public void update(Graphics g) {}
 
