@@ -1,8 +1,8 @@
 package com.vectors;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-
 
 public class userInterface extends Frame implements MouseMotionListener,MouseListener,ActionListener,KeyListener
 {
@@ -17,6 +17,7 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
     private static Menu File = new Menu("File");
     private static MenuItem open = new MenuItem("Open File");
     private static MenuItem Save = new MenuItem("Save File");
+    private static MenuItem undo = new MenuItem("Undo");
     private static MenuItem reset = new MenuItem("Reset Canvas");
 
     // shape
@@ -38,9 +39,55 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
     public static void main(String[] args)
     {
 
+        //quick start guide
+        Box quickStartBox= Box.createVerticalBox();
+        canvas.add( quickStartBox );
+
+        JLabel howToNill = new JLabel("-");
+        howToNill.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        howToNill.setAlignmentY(JLabel.CENTER_ALIGNMENT);
+        howToNill.setHorizontalAlignment(SwingConstants.CENTER);
+        quickStartBox.add( howToNill );
+
+        JLabel howToFirst = new JLabel("Quick Start Guide");
+        howToFirst.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        howToFirst.setAlignmentY(JLabel.CENTER_ALIGNMENT);
+        howToFirst.setHorizontalAlignment(SwingConstants.CENTER);
+        quickStartBox.add( howToFirst );
+
+        JLabel howToSecond = new JLabel("1. Select a shape from the 'Shape' drop-down above");
+        howToSecond.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        howToSecond.setHorizontalAlignment(SwingConstants.CENTER);
+        quickStartBox.add( howToSecond );
+
+        JLabel howToThird = new JLabel("2. Select the shape's color and style from the 'Style' drop-down above");
+        howToThird.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        howToThird.setHorizontalAlignment(SwingConstants.CENTER);
+        quickStartBox.add( howToThird );
+
+        JLabel howToFour = new JLabel("3. Save the .vec file by clicking the 'File' drop-down option and finally click 'Save'");
+        howToFour.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        howToFour.setHorizontalAlignment(SwingConstants.CENTER);
+        quickStartBox.add( howToFour );
+
+        //hide quick start guide
+        int delay = 5000;
+
+        ActionListener taskPerformer = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                howToNill.setVisible(false);
+                howToFirst.setVisible(false);
+                howToSecond.setVisible(false);
+                howToThird.setVisible(false);
+                howToFour.setVisible(false);
+            }
+        };
+
+        new javax.swing.Timer(delay, taskPerformer).start();
+
         //setup canvas
         canvas.setMenuBar(menuBar);
-        canvas.setTitle("Canvas");
+        canvas.setTitle("Vector Design Tool");
         canvas.setSize(800,800);
         canvas.setResizable(false);
         canvas.addMouseListener(canvas);
@@ -58,6 +105,8 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
         open.addActionListener(canvas);
         File.add(Save);
         Save.addActionListener(canvas);
+        File.add(undo);
+        undo.addActionListener(canvas);
         File.add(reset);
         reset.addActionListener(canvas);
 
@@ -76,18 +125,23 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
 
         //style
         menuBar.add(style);
-        style.add(changeColor);
-        changeColor.addActionListener(canvas);
         style.add(Static);
         Static.addActionListener(canvas);
         style.add(Fill);
         Fill.addActionListener(canvas);
+        style.add(changeColor);
+        changeColor.addActionListener(canvas);
+
+
+
 
     }
 
     public void actionPerformed(ActionEvent e) {}
 
     public void update(Graphics g) {}
+
+    public void canvas(Graphics g) {}
 
     public void mousePressed(MouseEvent e) {}
 
