@@ -5,13 +5,25 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 import javax.swing.filechooser.*;
 
 public class userInterface extends Frame implements MouseMotionListener,MouseListener,ActionListener,KeyListener
 {
 
+    private File file;
     private static int selectedShape =0;
+    private int x1;
+    private int x2;
+    private int y1;
+    private int y2;
     private static int shapeStyle =0;
+    private ArrayList<String> content = new ArrayList<>();
+    private ArrayList<String> importc = new ArrayList<>();
+    private final JFileChooser chooseFile = new JFileChooser();
+    private int screenWidth = 800;
+    private int screenHeight = 800;
+
 
     // canvas
     private static userInterface canvas = new userInterface();
@@ -178,6 +190,69 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
             shapeStyle =0;
         else if(selectedMenuItem== Fill)
             shapeStyle =1;
+
+        //file
+        if(selectedMenuItem== open) {
+            chooseFile.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            if(chooseFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
+                file = chooseFile.getSelectedFile();
+                try {
+                    Scanner reader = new Scanner(file);
+
+                    while(reader.hasNext()){
+
+                        importc.add(reader.nextLine());
+                    }
+
+
+                    System.out.println(importc);
+                    read();
+
+
+                } catch (FileNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            System.out.println(file.getName());
+        }
+        else if(selectedMenuItem== Save)
+        {
+            JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            j.setAcceptAllFileFilterUsed(false);
+            j.setDialogTitle("Select a .vec file");
+            FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .vec files", ".vec");
+            j.addChoosableFileFilter(restrict);
+            if(j.showSaveDialog(null) == JFileChooser.APPROVE_OPTION){
+                File file2;
+                file2 = j.getSelectedFile();
+                try {
+                    FileWriter writer = new FileWriter(file2);
+                    for(String str:content){
+                        writer.write(str);
+                    }
+                    writer.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+        }
+    }
+
+    public void read(){
+
+        Graphics g=getGraphics();
+        for (String str : importc) {
+            String[] part = str.split("\\s+");
+            if (part[0].equals("LINE")) {
+                shapeStyle = 1;
+                x1 = (int)Double.parseDouble(part[1]) * screenWidth;
+                x2 = (int)Double.parseDouble(part[3]) * screenWidth;
+                y1 = (int)Double.parseDouble(part[2]) * screenHeight;
+                y2 = (int)Double.parseDouble(part[4]) * screenHeight;
+            }
+        }
+        canvas(g);
     }
 
     public void update(Graphics g) {}
