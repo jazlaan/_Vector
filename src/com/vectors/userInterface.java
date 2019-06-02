@@ -191,11 +191,13 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
 
         //open .vec file
         if(selectedMenuItem== open) {
+            loadFile();
         }
 
         //save .vec file
         else if(selectedMenuItem== Save)
         {
+            inputOutput.saveFile();
         }
 
         //outlineColour
@@ -245,6 +247,26 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
             }
         }
         paint(g);
+    }
+
+    public void loadFile() {
+        JFileChooser chooseFile = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        chooseFile.setAcceptAllFileFilterUsed(false);
+        chooseFile.setDialogTitle("Open .vec file");
+        FileNameExtensionFilter restrict = new FileNameExtensionFilter(".vec file", "vec");
+        chooseFile.addChoosableFileFilter(restrict);
+        if(chooseFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
+            file = chooseFile.getSelectedFile();
+            try {
+                Scanner reader = new Scanner(file);
+                while(reader.hasNext()){
+                    userInterface.importc.add(reader.nextLine());
+                }
+                read();
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public void update(Graphics g) {}
