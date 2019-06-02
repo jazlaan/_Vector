@@ -308,6 +308,16 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
             }
 
         }
+        //Polygon
+        else if(selectedShape ==4){
+            if(shapeStyle ==0) {
+                new Polygon(g2,(int)pointStart.x,(int)pointStart.y,(int)pointEnd.x,(int)pointEnd.y,false);
+            }else{
+                fillShape = true;
+                new Polygon(g2,(int)pointStart.x,(int)pointStart.y,(int)pointEnd.x,(int)pointEnd.y,false);
+                new Polygon(g2,(int)pointStart.x,(int)pointStart.y,(int)pointEnd.x,(int)pointEnd.y,true);
+            }
+        }
     }
 
     public void mousePressed(MouseEvent e) {}
