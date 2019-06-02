@@ -134,8 +134,18 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
 
     }
 
+    /**
+     * Checks the size of the array that contains shapes
+     * and subtracts one from the total size of the array.
+     */
     public void undoShape() {
+        if (!content.isEmpty()) {
+            int size = content.size() - 1;
+            content.remove(size);
+            repaint();
+        }
     }
+
 
     public void actionPerformed(ActionEvent e) {
 
@@ -163,6 +173,12 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
 
         else if(selectedMenuItem== poly)
             selectedShape =4;
+
+        //style
+        if(selectedMenuItem== Static)
+            shapeStyle =0;
+        else if(selectedMenuItem== Fill)
+            shapeStyle =1;
 
         //file
         if(selectedMenuItem== open) {
