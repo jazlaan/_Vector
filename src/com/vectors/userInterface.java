@@ -297,6 +297,17 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
                 new Rectangle(g2,(int)pointStart.x,(int)pointStart.y,(int)pointEnd.x,(int)pointEnd.y,true);
             }
         }
+        //Ellipse
+        else if(selectedShape ==3){
+            if(shapeStyle ==0) {
+                new Ellipse(g2,(int)pointStart.x,(int)pointStart.y,(int)pointEnd.x,(int)pointEnd.y,false);
+            }else{
+                fillShape = true;
+                new Ellipse(g2,(int)pointStart.x,(int)pointStart.y,(int)pointEnd.x,(int)pointEnd.y,false);
+                new Ellipse(g2,(int)pointStart.x,(int)pointStart.y,(int)pointEnd.x,(int)pointEnd.y,true);
+            }
+
+        }
     }
 
     public void mousePressed(MouseEvent e) {}
