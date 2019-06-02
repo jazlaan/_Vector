@@ -134,19 +134,14 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
 
     }
 
+
+
+
+
     /**
-     * Checks the size of the array that contains shapes
-     * and subtracts one from the total size of the array.
+     * Checks if an action (menu option) is performed and
+     * runs the required functions.
      */
-    public void undoShape() {
-        if (!content.isEmpty()) {
-            int size = content.size() - 1;
-            content.remove(size);
-            repaint();
-        }
-    }
-
-
     public void actionPerformed(ActionEvent e)
     {
         MenuItem selectedMenuItem = (MenuItem) e.getSource();
@@ -220,6 +215,10 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
         }
     }
 
+    /**
+     * Splits every line in the .vec file and
+     * parses into shapes classes to be painted on the canvas.
+     */
     public void read(){
 
         Graphics g=getGraphics();
@@ -249,6 +248,7 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
         paint(g);
     }
 
+
     public void loadFile() {
         JFileChooser chooseFile = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         chooseFile.setAcceptAllFileFilterUsed(false);
@@ -269,10 +269,9 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
         }
     }
 
-    public void update(Graphics g) {}
 
-    public void canvas(Graphics g) {
-
+    public void canvas(Graphics g)
+    {
         g.setColor(penColor);
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setStroke(new BasicStroke(borderThickness));
@@ -320,9 +319,26 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
         }
     }
 
+    /**
+     * Assigns the starting coordinates of the mouse.
+     * when mouse was pressed.
+     * @param e mouseEvent
+     */
     public void mousePressed(MouseEvent e)
     {
         pointStart = e.getPoint();
+    }
+
+    /**
+     * Assigns the ending coordinates of the mouse.
+     * when mouse was released and draws the shapes on the canvas.
+     * @param e mouseEvent
+     */
+    public void mouseReleased(MouseEvent e){
+        Graphics g=getGraphics();
+        pointEnd.x=e.getX();
+        pointEnd.y=e.getY();
+        canvas(g);
     }
 
     public void mouseDragged(MouseEvent e)
@@ -330,6 +346,7 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
         Graphics g=getGraphics();
         pointEnd = e.getPoint();
     }
+
     /**
      * Assigns the ending coordinates of the mouse.
      * when mouse was moved.
@@ -338,23 +355,13 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
     public void mouseMoved(MouseEvent e){
         pointEnd = e.getPoint();
     }
-    public void mouseReleased(MouseEvent e){
-        Graphics g=getGraphics();
-        pointEnd.x=e.getX();
-        pointEnd.y=e.getY();
-        canvas(g);
-    }
 
-    public void mouseEntered(MouseEvent e) {}
 
-    public void mouseExited(MouseEvent e) {}
-
-    public void mouseClicked(MouseEvent e) {}
-
+    public void mouseEntered(MouseEvent e){}
+    public void mouseExited(MouseEvent e){}
+    public void mouseClicked(MouseEvent e){}
     public void keyTyped(KeyEvent e) {}
-
     public void keyPressed(KeyEvent e) {}
-
     public void keyReleased(KeyEvent e) {}
 }
 
