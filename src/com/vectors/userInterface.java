@@ -271,7 +271,19 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
 
     public void update(Graphics g) {}
 
-    public void canvas(Graphics g) {}
+    public void canvas(Graphics g) {
+
+        g.setColor(penColor);
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setStroke(new BasicStroke(borderThickness));
+
+        //Plot
+        if(selectedShape ==0) {
+            try{
+                new Plot(g2,(int)pointStart.x,(int)pointStart.y);
+            } catch (NullPointerException e) {}
+        }
+    }
 
     public void mousePressed(MouseEvent e) {}
 
