@@ -283,6 +283,10 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
                 new Plot(g2,(int)pointStart.x,(int)pointStart.y);
             } catch (NullPointerException e) {}
         }
+        //Line
+        else if(selectedShape ==1) {
+            new Line(g2,(int)pointStart.x,(int)pointStart.y,(int)pointEnd.x,(int)pointEnd.y);
+        }
     }
 
     public void mousePressed(MouseEvent e) {}
