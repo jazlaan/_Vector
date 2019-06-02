@@ -330,8 +330,14 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
         Graphics g=getGraphics();
         pointEnd = e.getPoint();
     }
-    public void mouseMoved(MouseEvent e) {}
-
+    /**
+     * Assigns the ending coordinates of the mouse.
+     * when mouse was moved.
+     * @param e mouseEvent
+     */
+    public void mouseMoved(MouseEvent e){
+        pointEnd = e.getPoint();
+    }
     public void mouseReleased(MouseEvent e){
         Graphics g=getGraphics();
         pointEnd.x=e.getX();
