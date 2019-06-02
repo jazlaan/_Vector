@@ -1,29 +1,49 @@
 package com.vectors;
 
+
+//Imports
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
+
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import javax.swing.filechooser.*;
+
+//Dependencies
+import com.vectors.IO.inputOutput;
+import com.vectors.Shapes.Ellipse;
+import com.vectors.Shapes.Line;
+import com.vectors.Shapes.Plot;
+import com.vectors.Shapes.Polygon;
+import com.vectors.Shapes.Rectangle;
+
 
 public class userInterface extends Frame implements MouseMotionListener,MouseListener,ActionListener,KeyListener
 {
 
-    private File file;
-    private static int selectedShape =0;
-    private int x1;
-    private int x2;
-    private int y1;
-    private int y2;
+    //Drawing Settings
+    Graphics g=getGraphics();
+    private static java.io.File file;
+    private static Color penColor;
+    private static Color fillColor;
+    private static Color outlineColour;
+    public static Color fillColour;
+    private static int borderThickness =4;
     private static int shapeStyle =0;
-    private ArrayList<String> content = new ArrayList<>();
-    private ArrayList<String> importc = new ArrayList<>();
+    private static int selectedShape =0;
+    private boolean fillShape = false;
+    public static int screenWidth = 800;
+    public static int screenHeight = 800;
+    public static Point pointStart = null;
+    public static Point pointEnd   = null;
     private final JFileChooser chooseFile = new JFileChooser();
-    private int screenWidth = 800;
-    private int screenHeight = 800;
 
+    //Arrays to store drawn and loaded shapes
+    public static ArrayList<String> content = new ArrayList<>();
+    public static ArrayList<String> importc = new ArrayList<>();
 
     // canvas
     private static userInterface canvas = new userInterface();
@@ -35,8 +55,8 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
     private static Menu File = new Menu("File");
     private static MenuItem open = new MenuItem("Open File");
     private static MenuItem Save = new MenuItem("Save File");
+    private static MenuItem reset = new MenuItem("Reset");
     private static MenuItem undo = new MenuItem("Undo");
-    private static MenuItem reset = new MenuItem("Reset Canvas");
 
     // shape
     private static Menu shape = new Menu("Shape");
@@ -46,62 +66,19 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
     private static MenuItem ellipse = new MenuItem("Ellipse");
     private static MenuItem poly = new MenuItem("Polygon");
 
-    // edit
-    private static Menu style = new Menu("Style");
-    private static MenuItem changeColor = new MenuItem("Change Color");
-    private static MenuItem Static = new MenuItem("Static Shape");
-    private static MenuItem Fill = new MenuItem("Fill Shape");
+    // filled
+    private static Menu fill = new Menu("Fill");
+    private static MenuItem fillEnable = new MenuItem("Enable");
+    private static MenuItem fillDisable = new MenuItem("Disable");
 
+    // outlineColour
+    private static Menu outlineColourChange = new Menu("Color");
+    private static MenuItem outlineColor = new MenuItem("Change Outline Color");
+    private static MenuItem fillColorChange = new MenuItem("Change Fill Color");
 
 
     public static void main(String[] args)
     {
-
-        //quick start guide
-        Box quickStartBox= Box.createVerticalBox();
-        canvas.add( quickStartBox );
-
-        JLabel howToNill = new JLabel("-");
-        howToNill.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        howToNill.setAlignmentY(JLabel.CENTER_ALIGNMENT);
-        howToNill.setHorizontalAlignment(SwingConstants.CENTER);
-        quickStartBox.add( howToNill );
-
-        JLabel howToFirst = new JLabel("Quick Start Guide");
-        howToFirst.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        howToFirst.setAlignmentY(JLabel.CENTER_ALIGNMENT);
-        howToFirst.setHorizontalAlignment(SwingConstants.CENTER);
-        quickStartBox.add( howToFirst );
-
-        JLabel howToSecond = new JLabel("1. Select a shape from the 'Shape' drop-down above");
-        howToSecond.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        howToSecond.setHorizontalAlignment(SwingConstants.CENTER);
-        quickStartBox.add( howToSecond );
-
-        JLabel howToThird = new JLabel("2. Select the shape's color and style from the 'Style' drop-down above");
-        howToThird.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        howToThird.setHorizontalAlignment(SwingConstants.CENTER);
-        quickStartBox.add( howToThird );
-
-        JLabel howToFour = new JLabel("3. Save the .vec file by clicking the 'File' drop-down option and finally click 'Save'");
-        howToFour.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        howToFour.setHorizontalAlignment(SwingConstants.CENTER);
-        quickStartBox.add( howToFour );
-
-        //hide quick start guide
-        int delay = 5000;
-
-        ActionListener taskPerformer = new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                howToNill.setVisible(false);
-                howToFirst.setVisible(false);
-                howToSecond.setVisible(false);
-                howToThird.setVisible(false);
-                howToFour.setVisible(false);
-            }
-        };
-
-        new javax.swing.Timer(delay, taskPerformer).start();
 
         //setup canvas
         canvas.setMenuBar(menuBar);
@@ -123,10 +100,10 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
         open.addActionListener(canvas);
         File.add(Save);
         Save.addActionListener(canvas);
-        File.add(undo);
-        undo.addActionListener(canvas);
         File.add(reset);
         reset.addActionListener(canvas);
+        File.add(undo);
+        undo.addActionListener(canvas);
 
         //shape
         menuBar.add(shape);
@@ -141,17 +118,19 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
         shape.add(poly);
         poly.addActionListener(canvas);
 
-        //style
-        menuBar.add(style);
-        style.add(Static);
-        Static.addActionListener(canvas);
-        style.add(Fill);
-        Fill.addActionListener(canvas);
-        style.add(changeColor);
-        changeColor.addActionListener(canvas);
+        //fill
+        menuBar.add(fill);
+        fill.add(fillEnable);
+        fillEnable.addActionListener(canvas);
+        fill.add(fillDisable);
+        fillDisable.addActionListener(canvas);
 
-
-
+        //Colour Change
+        menuBar.add(outlineColourChange);
+        outlineColourChange.add(outlineColor);
+        outlineColor.addActionListener(canvas);
+        outlineColourChange.add(fillColorChange);
+        fillColorChange.addActionListener(canvas);
 
     }
 
@@ -185,57 +164,11 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
         else if(selectedMenuItem== poly)
             selectedShape =4;
 
-        //style
-        if(selectedMenuItem== Static)
-            shapeStyle =0;
-        else if(selectedMenuItem== Fill)
-            shapeStyle =1;
-
         //file
         if(selectedMenuItem== open) {
-            chooseFile.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-            if(chooseFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
-                file = chooseFile.getSelectedFile();
-                try {
-                    Scanner reader = new Scanner(file);
-
-                    while(reader.hasNext()){
-
-                        importc.add(reader.nextLine());
-                    }
-
-
-                    System.out.println(importc);
-                    read();
-
-
-                } catch (FileNotFoundException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            System.out.println(file.getName());
         }
         else if(selectedMenuItem== Save)
         {
-            JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-            j.setAcceptAllFileFilterUsed(false);
-            j.setDialogTitle("Select a .vec file");
-            FileNameExtensionFilter restrict = new FileNameExtensionFilter("Only .vec files", ".vec");
-            j.addChoosableFileFilter(restrict);
-            if(j.showSaveDialog(null) == JFileChooser.APPROVE_OPTION){
-                File file2;
-                file2 = j.getSelectedFile();
-                try {
-                    FileWriter writer = new FileWriter(file2);
-                    for(String str:content){
-                        writer.write(str);
-                    }
-                    writer.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-
         }
     }
 
@@ -246,10 +179,10 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
             String[] part = str.split("\\s+");
             if (part[0].equals("LINE")) {
                 shapeStyle = 1;
-                x1 = (int)Double.parseDouble(part[1]) * screenWidth;
-                x2 = (int)Double.parseDouble(part[3]) * screenWidth;
-                y1 = (int)Double.parseDouble(part[2]) * screenHeight;
-                y2 = (int)Double.parseDouble(part[4]) * screenHeight;
+//                x1 = (int)Double.parseDouble(part[1]) * screenWidth;
+//                x2 = (int)Double.parseDouble(part[3]) * screenWidth;
+//                y1 = (int)Double.parseDouble(part[2]) * screenHeight;
+//                y2 = (int)Double.parseDouble(part[4]) * screenHeight;
             }
         }
         canvas(g);
