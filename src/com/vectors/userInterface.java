@@ -147,18 +147,27 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
     }
 
 
-    public void actionPerformed(ActionEvent e) {
-
+    public void actionPerformed(ActionEvent e)
+    {
         MenuItem selectedMenuItem = (MenuItem) e.getSource();
-
-        //reset canvas
+        if(selectedMenuItem== open ) {
+            if(importc.size() > 0 || content.size() > 0 ) {
+                repaint();
+                canvas.removeAll();
+                importc.clear();
+                content.clear();
+                repaint();
+            }
+        }
+        //undo canvas
         if(selectedMenuItem== undo){
             undoShape();
         }
+        //reset canvas
         else if(selectedMenuItem== reset)
             repaint();
 
-            //shape
+            //shapes
         else if(selectedMenuItem== plot)
             selectedShape =0;
 
@@ -174,34 +183,68 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
         else if(selectedMenuItem== poly)
             selectedShape =4;
 
-        //style
-        if(selectedMenuItem== Static)
+        //fill
+        if(selectedMenuItem== fillDisable)
             shapeStyle =0;
-        else if(selectedMenuItem== Fill)
+        else if(selectedMenuItem== fillEnable)
             shapeStyle =1;
 
-        //file
+        //open .vec file
         if(selectedMenuItem== open) {
         }
+
+        //save .vec file
         else if(selectedMenuItem== Save)
         {
+        }
+
+        //outlineColour
+        if(selectedMenuItem== outlineColor){
+            outlineColour = JColorChooser.showDialog(userInterface.this,
+                    "Choose a outlineColour", penColor);
+            if (outlineColour != null) {
+                penColor = outlineColour;
+            }
+        }
+
+        //fill color
+        else if (selectedMenuItem== fillColorChange) {
+            shapeStyle =1;
+            fillColour = JColorChooser.showDialog(userInterface.this,
+                    "Choose a outlineColour", fillColor);
+            if (fillColour != null) {
+                fillColor = fillColour;
+            }
         }
     }
 
     public void read(){
 
         Graphics g=getGraphics();
+        Graphics2D g2 = (Graphics2D) g.create();
+
         for (String str : importc) {
+            g.setColor(penColor);
             String[] part = str.split("\\s+");
-            if (part[0].equals("LINE")) {
-                shapeStyle = 1;
-//                x1 = (int)Double.parseDouble(part[1]) * screenWidth;
-//                x2 = (int)Double.parseDouble(part[3]) * screenWidth;
-//                y1 = (int)Double.parseDouble(part[2]) * screenHeight;
-//                y2 = (int)Double.parseDouble(part[4]) * screenHeight;
+            if (part[0].equals("plot")) {
+                new Plot (g2, Math.min((int)(Double.parseDouble(part[1]) * screenWidth ), (int)(Double.parseDouble(part[1]) * screenWidth )), Math.min((int)(Double.parseDouble(part[2])* screenHeight ), (int)(Double.parseDouble(part[2])* screenHeight )));
+            }
+            else if (part[0].equals("line")) {
+                new Line(g2,  Math.min((int)(Double.parseDouble(part[1]) * screenWidth ), (int)(Double.parseDouble(part[1]) * screenWidth ))   ,   Math.min((int)(Double.parseDouble(part[2]) * screenHeight ), (int)(Double.parseDouble(part[2]) * screenHeight )) ,Math.min((int)(Double.parseDouble(part[3]) * screenWidth ), (int)(Double.parseDouble(part[3]) * screenWidth )) ,Math.min((int)(Double.parseDouble(part[4]) * screenHeight ), (int)(Double.parseDouble(part[4]) * screenHeight )));
+            }
+            else if (part[0].equals("rectangle")) {
+                g2.drawRect(  (int)(Double.parseDouble(part[1]) * screenWidth) , (int)(Double.parseDouble(part[2]) * screenWidth)  , (int)(Double.parseDouble(part[3]) * screenWidth) , (int)(Double.parseDouble(part[4]) * screenWidth) );
+            }
+            else if (part[0].equals("ellipse")) {
+                g.drawOval(  (int)(Double.parseDouble(part[1]) * screenWidth) , (int)(Double.parseDouble(part[2]) * screenWidth)  , (int)(Double.parseDouble(part[3]) * screenWidth) , (int)(Double.parseDouble(part[4]) * screenWidth) );
+            }
+            else if (part[0].equals("polygon")) {
+                int polyXpoints[] = { (int)(Double.parseDouble(part[1]) ), (int)(Double.parseDouble(part[2]) ), (int)(Double.parseDouble(part[1]) ), (int)(Double.parseDouble(part[2]) ), (int)(Double.parseDouble(part[1]) )};
+                int polyYpoints[] = {(int)(Double.parseDouble(part[4]) ), (int)(Double.parseDouble(part[4]) ), (int)(Double.parseDouble(part[3]) ), (int)(Double.parseDouble(part[3]) ), (int)(Double.parseDouble(part[4]) )};
+                g.drawPolygon(polyXpoints, polyYpoints, 5);
             }
         }
-        canvas(g);
+        paint(g);
     }
 
     public void update(Graphics g) {}
