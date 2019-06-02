@@ -320,7 +320,10 @@ public class userInterface extends Frame implements MouseMotionListener,MouseLis
         }
     }
 
-    public void mousePressed(MouseEvent e) {}
+    public void mousePressed(MouseEvent e)
+    {
+        pointStart = e.getPoint();
+    }
 
     public void mouseDragged(MouseEvent e) {}
 
